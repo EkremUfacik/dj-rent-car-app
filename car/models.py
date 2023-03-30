@@ -6,8 +6,8 @@ import main.settings
 
 class Car(models.Model):
     GEAR = (
-        ('a', 'automatic'),
-        ('m', 'manuel')
+        ('a', 'Automatic'),
+        ('m', 'Manuel')
     )
     plate_number = models.CharField(max_length=15, unique=True)
     brand = models.CharField(max_length=15)
