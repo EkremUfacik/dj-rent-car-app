@@ -79,7 +79,6 @@ class ReservationView(ListCreateAPIView):
         return super().create(request, *args, **kwargs)       
         
         
-        
 
 
 class ReservationDetailView(RetrieveUpdateDestroyAPIView):

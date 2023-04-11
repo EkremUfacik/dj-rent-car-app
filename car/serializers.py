@@ -46,24 +46,35 @@ class CarSerializer(serializers.ModelSerializer):
 
 class ReservationSerializer(serializers.ModelSerializer):
     total_price = serializers.SerializerMethodField()
+    customer_id = serializers.IntegerField(required=False)
+    customer = serializers.StringRelatedField()
+    car = serializers.StringRelatedField()
+    car_id = serializers.IntegerField()
 
     class Meta:
         model = Reservation
         fields = (
             'id',
+            "customer_id",
             'customer',
             'car',
+            'car_id',
             'start_date',
             'end_date',
             'total_price'
         )
-        validators = [
-            serializers.UniqueTogetherValidator(
-                queryset=Reservation.objects.all(),
-                fields=('customer', 'start_date', 'end_date'),
-                message=('You alreday have a reservation between these dates...')
-            )
-        ]
+        # validators = [
+        #     serializers.UniqueTogetherValidator(
+        #         queryset=Reservation.objects.all(),
+        #         fields=('customer_id', 'start_date', 'end_date'),
+        #         message=('You alreday have a reservation between these dates...')
+        #     )
+        # ]
 
     def get_total_price(self, obj):
         return obj.car.rent_per_day * (obj.end_date - obj.start_date).days
+    
+    def create(self, validated_data):
+        validated_data["customer_id"] = self.context["request"].user.id
+        instance = Reservation.objects.create(**validated_data)
+        return instance
